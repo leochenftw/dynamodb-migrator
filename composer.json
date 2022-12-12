@@ -1,0 +1,19 @@
+{
+    "name": "leochenftw/dynamodb-migrator",
+    "description": "Leo Chen's SS -> DynamoDB migrator",
+    "type": "silverstripe-vendormodule",
+    "homepage": "https://github.com/leochenftw",
+    "license": "MIT",
+    "keywords": ["aws", "dynamodb"],
+    "authors": [
+        {
+            "name": "Leo Chen",
+            "homepage": "http://leochen.co.nz"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "^4.0",
+        "ramsey/uuid": "^4.6",
+        "aws/aws-sdk-php": "^3.2"
+    }
+}
