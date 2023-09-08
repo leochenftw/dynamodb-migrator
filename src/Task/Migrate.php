@@ -6,6 +6,7 @@ use SilverStripe\Dev\BuildTask;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
 use Aws\DynamoDb\Exception\DynamoDbException;
+use SilverStripe\Core\Environment;
 
 class Migrate extends BuildTask
 {
@@ -21,7 +22,6 @@ class Migrate extends BuildTask
      */
     protected $title = 'DynamoDB Migrator';
     private static $segment = 'dynamodb-migrate';
-    private static $classes_to_migrate = [];
 
     /**
      * This method called via the TaskRunner
@@ -30,10 +30,32 @@ class Migrate extends BuildTask
      */
     public function run($request)
     {
-        $client = new DynamoDbClient([
-            'region'       => 'ap-southeast-2',
-            'version'      => 'latest',
-        ]);
+        $tableName = $this->config()->dynamodb_table;
+
+        $region = Environment::getEnv('AWS_REGION');
+        $version = Environment::getEnv('AWS_VERSION');
+        $version = empty($version) ? 'latest' : $version;
+        $key = Environment::getEnv('AWS_ACCESS_KEY_ID');
+        $secret = Environment::getEnv('AWS_SECRET_ACCESS_KEY');
+
+        if (
+            empty($region)
+            || empty($key)
+            || empty($secret)
+        ) {
+            throw new \Exception('You have missing env var(s). Please check your .env file');
+        }
+        
+        $configs = [
+            'region' => $region,
+            'version' => $version,
+            'credentials' => [
+                'key' => $key,
+                'secret' => $secret,
+            ],
+        ];
+
+        $client = new DynamoDbClient($configs);
 
         $marshaler = new Marshaler();
 
@@ -57,7 +79,7 @@ class Migrate extends BuildTask
 
                 try {
                     $client->putItem([
-                        'TableName' => 'MerchantCloud',
+                        'TableName' => $tableName,
                         'Item'      => $marshaler->marshalItem($item->DynamoDbMapping),
                     ]);
                     $lastItem = $item->DynamoDbMapping;

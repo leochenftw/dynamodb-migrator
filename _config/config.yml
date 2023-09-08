@@ -1,3 +1,6 @@
 ---
 Name: 'dynamodb-migrator'
 ---
+Leochenftw\Task\Migrate:
+  dynamodb_table: ''
+  classes_to_migrate: []
