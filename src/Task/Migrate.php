@@ -33,8 +33,7 @@ class Migrate extends BuildTask
         $tableName = $this->config()->dynamodb_table;
 
         $region = Environment::getEnv('AWS_REGION');
-        $version = Environment::getEnv('AWS_VERSION');
-        $version = empty($version) ? 'latest' : $version;
+        $version = Environment::getEnv('AWS_VERSION') ?: 'latest';
         $key = Environment::getEnv('AWS_ACCESS_KEY_ID');
         $secret = Environment::getEnv('AWS_SECRET_ACCESS_KEY');
 
