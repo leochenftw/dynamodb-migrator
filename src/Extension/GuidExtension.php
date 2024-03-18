@@ -35,7 +35,6 @@ class GuidExtension extends DataExtension
         parent::onBeforeWrite();
 
         if (empty($this->owner->GUID)) {
-            $uuid = Uuid::uuid4();
             $this->owner->GUID = $this->populateGUID();
         }
     }
